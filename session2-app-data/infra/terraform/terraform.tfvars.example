@@ -1,0 +1,8 @@
+location            = "eastus"
+resource_group_name = "rg-session2-app-data"
+workload_name       = "session2appdata"
+database_name       = "trainingdb"
+container_name      = "items"
+partition_key_path  = "/category"
+environment         = "dev"
+app_service_sku     = "F1"

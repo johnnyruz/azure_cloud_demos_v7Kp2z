@@ -1,0 +1,11 @@
+location            = "eastus"
+resource_group_name = "rg-session3-capstone"
+workload_name       = "capstonetasks"
+environment         = "dev"
+vnet_address_space  = ["10.30.0.0/16"]
+app_subnet_prefix   = "10.30.1.0/24"
+data_subnet_prefix  = "10.30.2.0/24"
+database_name       = "taskdb"
+container_name      = "tasks"
+partition_key_path  = "/status"
+app_service_sku     = "F1"

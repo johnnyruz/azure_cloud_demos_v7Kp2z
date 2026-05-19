@@ -1,0 +1,5 @@
+location               = "eastus"
+resource_group_name    = "rg-session1-terraform-demo"
+storage_account_prefix = "stsession1"
+container_name         = "training"
+environment            = "dev"
