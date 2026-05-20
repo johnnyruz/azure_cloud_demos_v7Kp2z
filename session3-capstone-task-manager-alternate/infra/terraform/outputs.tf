@@ -86,3 +86,41 @@ output "frontend_url" {
 output "frontend_container_name" {
   value = "$web"
 }
+
+# ── GitHub Actions secrets ────────────────────────────────────────────────────
+# Set these in: https://github.com/<owner>/<repo>/settings/secrets/actions
+
+output "github_secret_AZURE_CLIENT_ID" {
+  description = "App Registration client ID — set as AZURE_CLIENT_ID in GitHub secrets."
+  value       = azuread_application.github_actions.client_id
+}
+
+output "github_secret_AZURE_TENANT_ID" {
+  description = "Entra ID tenant ID — set as AZURE_TENANT_ID in GitHub secrets."
+  value       = data.azurerm_client_config.current.tenant_id
+}
+
+output "github_secret_AZURE_SUBSCRIPTION_ID" {
+  description = "Azure subscription ID — set as AZURE_SUBSCRIPTION_ID in GitHub secrets."
+  value       = data.azurerm_client_config.current.subscription_id
+}
+
+output "github_secret_ACR_LOGIN_SERVER" {
+  description = "ACR login server — set as ACR_LOGIN_SERVER in GitHub secrets."
+  value       = azurerm_container_registry.capstone.login_server
+}
+
+output "github_secret_ACA_RESOURCE_GROUP" {
+  description = "Resource group name — set as ACA_RESOURCE_GROUP in GitHub secrets."
+  value       = data.azurerm_resource_group.capstone.name
+}
+
+output "github_secret_ACA_TASKMANAGER_NAME" {
+  description = "Container App name — set as ACA_TASKMANAGER_NAME in GitHub secrets."
+  value       = azurerm_container_app.taskmanager.name
+}
+
+output "github_secret_ACA_LABELS_NAME" {
+  description = "Container App name — set as ACA_LABELS_NAME in GitHub secrets."
+  value       = azurerm_container_app.labels.name
+}

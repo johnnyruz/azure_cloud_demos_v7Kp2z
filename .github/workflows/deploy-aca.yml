@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - "session-3-capstone-task-manager-alternate/src/**"
+      - "session3-capstone-task-manager-alternate/src/**"
   pull_request:
     paths:
-      - "session-3-capstone-task-manager-alternate/src/**"
+      - "session3-capstone-task-manager-alternate/src/**"
 
 permissions:
   id-token: write   # required for OIDC login
@@ -53,7 +53,7 @@ jobs:
             --registry "$ACR_LOGIN_SERVER" \
             --image "labels-api:${{ steps.tag.outputs.TAG }}" \
             --image "labels-api:latest" \
-            session-3-capstone-task-manager-alternate/src/labels-api
+            session3-capstone-task-manager-alternate/src/labels-api
 
       - name: Build and push taskmanager-api
         run: |
@@ -61,7 +61,7 @@ jobs:
             --registry "$ACR_LOGIN_SERVER" \
             --image "taskmanager-api:${{ steps.tag.outputs.TAG }}" \
             --image "taskmanager-api:latest" \
-            session-3-capstone-task-manager-alternate/src/taskmanager-api
+            session3-capstone-task-manager-alternate/src/taskmanager-api
 
       - name: Update labels-api Container App
         run: |

@@ -72,5 +72,4 @@ variable "partition_key_path" {
 variable "github_repo" {
   type        = string
   description = "GitHub repo in owner/name format. Used in CI/CD setup instructions."
-  default     = "REPLACE-WITH-OWNER/REPLACE-WITH-REPO"
 }

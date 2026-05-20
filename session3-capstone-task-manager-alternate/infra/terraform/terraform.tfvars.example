@@ -9,4 +9,4 @@ data_subnet_prefix  = "10.31.4.0/24"
 database_name       = "taskdb"
 container_name      = "tasks"
 partition_key_path  = "/status"
-github_repo         = "your-org/your-repo"
+github_repo         = "your-org/your-repo"   # required for OIDC federated credentials

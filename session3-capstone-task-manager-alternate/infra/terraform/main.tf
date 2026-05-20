@@ -454,9 +454,6 @@ resource "azurerm_container_app_environment" "capstone" {
     workload_profile_type = "Consumption"
   }
 
-  identity {
-    type = "SystemAssigned"
-  }
 }
 
 # Private DNS zone so VNet resources (App Gateway) can resolve ACA internal FQDNs.
