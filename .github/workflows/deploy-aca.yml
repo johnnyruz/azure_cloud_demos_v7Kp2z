@@ -1,0 +1,93 @@
+name: Build and Deploy to Azure Container Apps
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "session-3-capstone-task-manager-alternate/src/**"
+  pull_request:
+    paths:
+      - "session-3-capstone-task-manager-alternate/src/**"
+
+permissions:
+  id-token: write   # required for OIDC login
+  contents: read
+  pull-requests: write
+
+env:
+  ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+  RESOURCE_GROUP: ${{ secrets.ACA_RESOURCE_GROUP }}
+  ACA_TASKMANAGER_NAME: ${{ secrets.ACA_TASKMANAGER_NAME }}
+  ACA_LABELS_NAME: ${{ secrets.ACA_LABELS_NAME }}
+
+jobs:
+  build-and-deploy:
+    name: Build images and update Container Apps
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Determine image tag: use PR number on pull_request, short SHA on push
+      - name: Set image tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "TAG=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "TAG=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build and push labels-api
+        run: |
+          az acr build \
+            --registry "$ACR_LOGIN_SERVER" \
+            --image "labels-api:${{ steps.tag.outputs.TAG }}" \
+            --image "labels-api:latest" \
+            session-3-capstone-task-manager-alternate/src/labels-api
+
+      - name: Build and push taskmanager-api
+        run: |
+          az acr build \
+            --registry "$ACR_LOGIN_SERVER" \
+            --image "taskmanager-api:${{ steps.tag.outputs.TAG }}" \
+            --image "taskmanager-api:latest" \
+            session-3-capstone-task-manager-alternate/src/taskmanager-api
+
+      - name: Update labels-api Container App
+        run: |
+          az containerapp update \
+            --name "$ACA_LABELS_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "${ACR_LOGIN_SERVER}/labels-api:${{ steps.tag.outputs.TAG }}"
+
+      - name: Update taskmanager-api Container App
+        run: |
+          az containerapp update \
+            --name "$ACA_TASKMANAGER_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "${ACR_LOGIN_SERVER}/taskmanager-api:${{ steps.tag.outputs.TAG }}"
+
+      - name: Comment deployment URL on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### Container Apps deployed\n\n` +
+                    `**Image tag:** \`${{ steps.tag.outputs.TAG }}\`\n\n` +
+                    `Both \`labels-api\` and \`taskmanager-api\` have been updated in Azure Container Apps.\n` +
+                    `Access the API via the App Gateway URL stored in \`ACA_APPGW_FQDN\` secret.`
+            })

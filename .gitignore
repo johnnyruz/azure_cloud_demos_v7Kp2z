@@ -23,3 +23,7 @@ Training_Content.sln
 *.zip
 
 **/.terraform.lock.hcl
+
+.venv/
+
+*.pyc

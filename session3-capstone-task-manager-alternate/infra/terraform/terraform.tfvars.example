@@ -1,0 +1,12 @@
+location            = "eastus"
+resource_group_name = "rg-session3-capstone-alt"
+workload_name       = "altcaptasks"
+environment         = "dev"
+vnet_address_space  = ["10.31.0.0/16"]
+appgw_subnet_prefix = "10.31.0.0/24"
+aca_subnet_prefix   = "10.31.2.0/23"
+data_subnet_prefix  = "10.31.4.0/24"
+database_name       = "taskdb"
+container_name      = "tasks"
+partition_key_path  = "/status"
+github_repo         = "your-org/your-repo"

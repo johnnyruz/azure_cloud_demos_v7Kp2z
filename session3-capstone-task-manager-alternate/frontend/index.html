@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Container Task Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">Cloud Journey Workshop</p>
+      <h1>Container Task Manager</h1>
+      <p class="subtitle">A static frontend calling a Python FastAPI microservice on Azure Container Apps, secured behind Application Gateway with private VNet ingress and Cosmos DB via Private Endpoint.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h2>Add a task</h2>
+          <p>Create a task through the API and persist it in Cosmos DB. Status options are loaded live from the <strong>labels-api</strong> microservice via ACA service discovery.</p>
+        </div>
+        <span id="apiStatus" class="status">Checking API...</span>
+      </div>
+
+      <form id="taskForm" class="task-form">
+        <label>
+          Task title
+          <input id="title" name="title" type="text" placeholder="Review private endpoint DNS" required>
+        </label>
+        <label>
+          Description
+          <textarea id="description" name="description" rows="3" placeholder="What needs to be done?"></textarea>
+        </label>
+        <label>
+          Status
+          <select id="status" name="status">
+            <option value="todo">To do</option>
+          </select>
+        </label>
+        <button type="submit">Add task</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h2>Tasks</h2>
+          <p>Loaded from Cosmos DB through the secured API.</p>
+        </div>
+        <button id="refreshButton" class="secondary" type="button">Refresh</button>
+      </div>
+      <div id="message" class="message" hidden></div>
+      <div id="tasks" class="task-list"></div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
