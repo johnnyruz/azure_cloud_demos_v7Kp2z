@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Labels API", version="1.0.0")
 
-LABELS = ["todo", "in-progress", "done"]
+LABELS = ["todo", "in-progress", "done", "cancelled"]
 
 
 @app.get("/health")
