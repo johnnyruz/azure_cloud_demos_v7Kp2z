@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import httpx
 from azure.cosmos import CosmosClient
 from azure.cosmos import exceptions as cosmos_exceptions
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -62,8 +62,16 @@ class CreateTaskRequest(BaseModel):
 
 
 @app.get("/health")
-def health():
-    return {"status": "healthy", "timestamp": datetime.now(timezone.utc)}
+def health(request: Request):
+    # X-Forwarded-For is set by App Gateway; fall back to the direct client IP
+    forwarded_for = request.headers.get("x-forwarded-for")
+    client_ip = forwarded_for.split(",")[0].strip() if forwarded_for else request.client.host
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now(timezone.utc),
+        "client_ip": client_ip,
+        "headers": dict(request.headers),
+    }
 
 
 @app.get("/labels")
