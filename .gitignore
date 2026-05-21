@@ -27,3 +27,5 @@ Training_Content.sln
 .venv/
 
 *.pyc
+
+**/settings*.json
